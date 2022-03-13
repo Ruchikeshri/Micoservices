@@ -83,12 +83,12 @@ public class BlogController {
         return new ResponseEntity<Blog>(blogService.deleteById(BlogId), HttpStatus.OK);
     }
 
-//    @GetMapping("blogsID")
-//    @ApiOperation(value = "get by ID")
-//    public ResponseEntity<?> GetBlogs() {
-//        List<Blog> b2 = blogService.getAllBlogs();
-//        List<String> b4 = b2.stream().sorted(Comparator.comparingInt(Blog::getBlogId)).map(Blog::getAuthorName).collect(Collectors.toList());
-//        return new ResponseEntity<>(String.valueOf(b4), HttpStatus.OK);
-//    }
+    @GetMapping("blogsID")
+    @ApiOperation(value = "get by ID")
+    public ResponseEntity<?> GetBlogs() {
+        List<Blog> b2 = blogService.getAllBlogs();
+        List<String> b4 = b2.stream().sorted(Comparator.comparingInt(Blog::getBlogId)).map(Blog::getAuthorName).collect(Collectors.toList());
+        return new ResponseEntity<>(String.valueOf(b4), HttpStatus.OK);
+    }
 }
 
