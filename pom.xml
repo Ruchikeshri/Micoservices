@@ -49,6 +49,7 @@
 		<module>userservice</module>
 		<module>apigateway-service</module>
 		<module>config-service</module>
+		<module>discovery-server</module>
 	</modules>
 	<build>
 		<plugins>
