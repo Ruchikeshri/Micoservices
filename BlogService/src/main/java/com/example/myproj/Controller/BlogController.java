@@ -13,13 +13,16 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.myproj.Service.BlogService;
+import org.springframework.web.client.RestTemplate;
 
 //@CrossOrigin(value = "*")
+@RefreshScope
 @RestController
 @RequestMapping(value = "/api/v1/")
 public class BlogController {
@@ -29,6 +32,8 @@ public class BlogController {
     @Autowired
     private BlogSequenceGenerator sequenceGenerator;
 
+    @Autowired
+    private RestTemplate template;
     @Autowired
     public BlogController(BlogService blogService) {
 
@@ -45,8 +50,14 @@ public class BlogController {
         return new ResponseEntity<>(blogService.SaveBlog(blog), HttpStatus.OK);
     }
 
-//    @GetMapping("blogs")
-//    @ApiOperation(value = "get")
+    @GetMapping("/users-service")
+    public String invokeUserService()
+    {
+        String url="http://USER-SERVICE/api/v1/users";
+        return template.getForObject(url,String.class);
+    }
+
+  @ApiOperation(value = "get")
     @GetMapping("blogs")
     public ResponseEntity<List<Blog>> getBlogs() {
         logger.info("Getting blog details");

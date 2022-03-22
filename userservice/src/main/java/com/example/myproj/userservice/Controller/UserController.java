@@ -8,19 +8,23 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
 
 
 @RestController
+@RefreshScope
 @RequestMapping(value="/api/v1/")
 public class UserController {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -46,9 +50,9 @@ public String invokeBlogService(@RequestParam int BlogId)
 }
 
     @DeleteMapping("/blogs-service")
-    public String updateBlogService(@RequestParam int BlogId)
+    public String deleteBlogService(@RequestParam int BlogId)
     {
-        logger.info("Updating Blog Service from user service");
+        logger.info("Deleting Blog Service from user service");
         String url="http://BLOG-SERVICE/api/v1/blog?BlogId="+BlogId;
         return template.getForObject(url,String.class);
     }
@@ -63,6 +67,7 @@ public String invokeBlogService(@RequestParam int BlogId)
     @GetMapping("/users")
     public ResponseEntity<List<RegisterAndLogin>> GetAllUsers()
     { logger.info("...Fetching all USER Details");
+
         return new ResponseEntity<List<RegisterAndLogin>>(userService.getAllUser(),HttpStatus.OK);
     }
     @GetMapping("user")
@@ -88,6 +93,8 @@ public String invokeBlogService(@RequestParam int BlogId)
         logger.info("....Getting all email id as a List");
         List<RegisterAndLogin> emails=userService.getAllUser();
         List<String> e1 = emails.stream().sorted(Comparator.comparing(RegisterAndLogin::getEmail).reversed()).map(RegisterAndLogin::getEmail).collect(Collectors.toList());
+        Set<String> uniqueAuthor= new HashSet<>();
+//       Set<String> duplicates= e1.stream().filter(name->uniqueAuthor.add(String.valueOf(name))).collect(Collectors.toSet());
         return new ResponseEntity<>(e1,HttpStatus.OK);
     }
 
