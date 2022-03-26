@@ -10,7 +10,6 @@ import com.example.myproj.Exception.BlogNotFoundException;
 import com.example.myproj.Service.BlogSequenceGenerator;
 import com.example.myproj.model.Blog;
 //import com.example.myproj.userservice.model.RegisterAndLogin;
-//import com.example.myproj.userservice.model.RegisterAndLogin;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.myproj.Service.BlogService;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 //@CrossOrigin(value = "*")
 @RefreshScope
@@ -36,6 +36,8 @@ public class BlogController {
 
     @Autowired
     private RestTemplate template;
+    @Autowired
+    private WebClient.Builder webClient;
     @Autowired
     public BlogController(BlogService blogService) {
 
@@ -53,22 +55,32 @@ public class BlogController {
     }
 
     @GetMapping("/users-service")
-    public String invokeUserService()
-    {
-        String url="http://USER-SERVICE/api/v1/users";
-        return template.getForObject(url,String.class);
+    public String invokeUserService() {
+        String url = "http://USER-SERVICE/api/v1/users";
+        return template.getForObject(url, String.class);
     }
 
 //    @PostMapping("/user1")
-//    public String adduser(@RequestBody RegisterAndLogin user)
+//    public List<RegisterAndLogin> adduser(@RequestBody RegisterAndLogin user)
 //    {
 //        String url="http://USER-SERVICE/api/v1/user";
 //
-//        return template.postForObject(url,user,String.class);
+//        return (List<RegisterAndLogin>) template.postForObject(url,user,RegisterAndLogin.class);
 //    }
+@PostMapping("/user1")
+public String addUser()
+{
+    webClient.build()
+            .post()
+            .uri("http://USER-SERVICE/api/v1/user")
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+    return "ADDED USER FROM BLOG";
+}
 
 
-  @ApiOperation(value = "get")
+    @ApiOperation(value = "get")
     @GetMapping("blogs")
     public ResponseEntity<List<Blog>> getBlogs() {
         logger.info("Getting blog details");
@@ -93,7 +105,8 @@ public class BlogController {
         logger.info(".........Get Blog by ID details");
         return new ResponseEntity<Blog>(blogService.getBlogById(BlogId), HttpStatus.OK);
     }
-//    @GetMapping("blog/{BlogId}")
+
+    //    @GetMapping("blog/{BlogId}")
 //public ResponseEntity<Blog> getBlogById(@PathVariable("BlogId") int blogId) throws BlogNotFoundException
 //{
 //	return new ResponseEntity<Blog>(blogService.getBlogById(blogId),HttpStatus.OK);

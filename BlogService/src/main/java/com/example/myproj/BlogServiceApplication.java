@@ -9,6 +9,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.io.File;
@@ -28,6 +29,11 @@ public class BlogServiceApplication {
 	public RestTemplate getTemplate()
 	{
 		return  new RestTemplate();
+	}
+	@Bean
+	public WebClient.Builder getWebClient()
+	{
+		return WebClient.builder();
 	}
 	public static void main(String[] args) {
 		SpringApplication.run(BlogServiceApplication.class, args);
