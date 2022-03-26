@@ -9,6 +9,8 @@ import com.example.myproj.Exception.BlogNotFoundException;
 
 import com.example.myproj.Service.BlogSequenceGenerator;
 import com.example.myproj.model.Blog;
+//import com.example.myproj.userservice.model.RegisterAndLogin;
+//import com.example.myproj.userservice.model.RegisterAndLogin;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +58,15 @@ public class BlogController {
         String url="http://USER-SERVICE/api/v1/users";
         return template.getForObject(url,String.class);
     }
+
+//    @PostMapping("/user1")
+//    public String adduser(@RequestBody RegisterAndLogin user)
+//    {
+//        String url="http://USER-SERVICE/api/v1/user";
+//
+//        return template.postForObject(url,user,String.class);
+//    }
+
 
   @ApiOperation(value = "get")
     @GetMapping("blogs")

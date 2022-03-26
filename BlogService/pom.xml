@@ -144,6 +144,24 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.example.myproj</groupId>-->
+<!--            <artifactId>userservice</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+        <!--        <dependency>-->
+<!--            <groupId>com.example.myproj</groupId>-->
+<!--            <artifactId>userservice</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.example.myproj</groupId>-->
+<!--            <artifactId>userservice</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
     </dependencies>
     <dependencyManagement>
         <dependencies>
