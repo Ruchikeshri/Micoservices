@@ -16,8 +16,9 @@ import java.util.Collection;
 @ToString
 @Document(collection="UserCredentials")
 public class RegisterAndLogin {
-    @Id
+//    @Id
 //    @EachPattern(regexp="\b[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}\b.")
+    @Id
     String email;
     String password;
 

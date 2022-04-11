@@ -16,6 +16,7 @@ public class Blog {
     public static final String SEQUENCE_NAME = "sequence";
 
     @Id
+//    private String email;
     private int blogId;
     private String blogTitle;
     private String authorName;

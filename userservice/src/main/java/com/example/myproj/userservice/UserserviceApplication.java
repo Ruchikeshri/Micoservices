@@ -38,24 +38,6 @@ public class UserserviceApplication {
         SpringApplication.run(UserserviceApplication.class, args);
     }
 
-//@Bean
-//CachingConnectionFactory connectionFactory()
-//    {
-//        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(host);
-//        cachingConnectionFactory.setUsername(username);
-//        cachingConnectionFactory.setPassword(password);
-//        return cachingConnectionFactory;
-//    }
-//    @Bean
-//    public MessageConverter jsonMessageConverter()
-//    {
-//        return new Jackson2JsonMessageConverter();
-//    }
-//    @Bean
-//    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory)
-//    {
-//        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-//        rabbitTemplate.setMessageConverter(jsonMessageConverter());
-//        return rabbitTemplate;
-//    }
+
+
 }
