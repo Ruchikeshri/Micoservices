@@ -5,9 +5,9 @@ name: Java CICD with Maven
 
 on:
   push:
-    branches: [ main ]
+    branches: [ Development ]
   pull_request:
-    branches: [ main ]
+    branches: [ Development ]
 
 jobs:
   build:
@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@Development
+    - uses: actions/checkout@v1
     - name: Set up JDK 11
-      uses: actions/setup-java@Development
+      uses: actions/setup-java@v1
       with:
         java-version: '11'
         distribution: 'temurin'
