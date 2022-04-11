@@ -1,5 +1,6 @@
 package com.example.myproj.Controller;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,17 +10,24 @@ import com.example.myproj.Exception.BlogNotFoundException;
 
 import com.example.myproj.Service.BlogSequenceGenerator;
 import com.example.myproj.model.Blog;
+//import com.example.myproj.userservice.model.RegisterAndLogin;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.myproj.Service.BlogService;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 //@CrossOrigin(value = "*")
 @RefreshScope
@@ -35,9 +43,22 @@ public class BlogController {
     @Autowired
     private RestTemplate template;
     @Autowired
+    private WebClient.Builder webClient;
+
+    @Autowired
     public BlogController(BlogService blogService) {
 
         this.blogService = blogService;
+    }
+
+    @Bean
+    public WebMvcConfigurer configure() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/*").allowedOrigins("http://localhost:8086");
+            }
+        };
     }
 
     @ApiOperation(value = "Save the blogs")
@@ -49,15 +70,49 @@ public class BlogController {
 
         return new ResponseEntity<>(blogService.SaveBlog(blog), HttpStatus.OK);
     }
+    @Value("${app.validationConfirmationMessage}")
+    private String validationConfirmationMessage;
 
     @GetMapping("/users-service")
-    public String invokeUserService()
-    {
-        String url="http://USER-SERVICE/api/v1/users";
-        return template.getForObject(url,String.class);
+    public String invokeUserService() {
+        String url = "http://USER-SERVICE/api/v1/users";
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("user-key" , "39f6dbeccbb0bd94593baf9a4d295c66");
+//        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+//        HttpEntity<String> entity = new HttpEntity<>(headers);
+//        return  template.exchange(url, HttpMethod.GET, entity,Object.class);
+        return template.getForObject(url, String.class);
+    }
+//    @Value("${jwt.secret}")
+    @ApiOperation(value = "authorize",authorizations={@Authorization(value = "${jwt.secret}")})
+    @GetMapping("data")
+    public String getSensitiveData() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("authorization" , "secret");
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        return validationConfirmationMessage;
     }
 
-  @ApiOperation(value = "get")
+    //    @PostMapping("/user1")
+//    public List<RegisterAndLogin> adduser(@RequestBody RegisterAndLogin user)
+//    {
+//        String url="http://USER-SERVICE/api/v1/user";
+//
+//        return (List<RegisterAndLogin>) template.postForObject(url,user,RegisterAndLogin.class);
+//    }
+    @PostMapping("/user1")
+    public String addUser() {
+        webClient.build()
+                .post()
+                .uri("http://USER-SERVICE/api/v1/user")
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        return "ADDED USER FROM BLOG";
+    }
+
+
+    @ApiOperation(value = "get",authorizations={@Authorization(value = "${jwt.secret}")})
     @GetMapping("blogs")
     public ResponseEntity<List<Blog>> getBlogs() {
         logger.info("Getting blog details");
@@ -82,7 +137,8 @@ public class BlogController {
         logger.info(".........Get Blog by ID details");
         return new ResponseEntity<Blog>(blogService.getBlogById(BlogId), HttpStatus.OK);
     }
-//    @GetMapping("blog/{BlogId}")
+
+    //    @GetMapping("blog/{BlogId}")
 //public ResponseEntity<Blog> getBlogById(@PathVariable("BlogId") int blogId) throws BlogNotFoundException
 //{
 //	return new ResponseEntity<Blog>(blogService.getBlogById(blogId),HttpStatus.OK);
