@@ -50,6 +50,7 @@
 		<module>apigateway-service</module>
 		<module>config-service</module>
 		<module>discovery-server</module>
+		<module>Springboot-admin</module>
 	</modules>
 	<build>
 		<plugins>

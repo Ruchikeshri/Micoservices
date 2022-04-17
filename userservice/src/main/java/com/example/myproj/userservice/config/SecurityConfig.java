@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
@@ -18,9 +20,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     {
         return new BCryptPasswordEncoder();
     }
-@Override
-    protected void configure(HttpSecurity http) throws Exception
+    @Override
+    public void configure(HttpSecurity http) throws Exception
 {
+//    http.authorizeRequests(exchange->exchange.anyRequest().authenticated())
+//                    .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
     http.csrf().disable();
 }
 

@@ -9,6 +9,7 @@ import com.example.myproj.Exception.BlogAlreadyExistsException;
 import com.example.myproj.Exception.BlogNotFoundException;
 
 import com.example.myproj.Service.BlogSequenceGenerator;
+//import com.example.myproj.client.UserClient;
 import com.example.myproj.model.Blog;
 //import com.example.myproj.userservice.model.RegisterAndLogin;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +27,6 @@ import com.example.myproj.Service.BlogService;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 //@CrossOrigin(value = "*")
@@ -39,7 +39,7 @@ public class BlogController {
     private BlogService blogService;
     @Autowired
     private BlogSequenceGenerator sequenceGenerator;
-
+//    private final UserClient userClient;
     @Autowired
     private RestTemplate template;
     @Autowired
@@ -49,6 +49,7 @@ public class BlogController {
     public BlogController(BlogService blogService) {
 
         this.blogService = blogService;
+//        this.userClient = userClient;
     }
 
     @Bean
