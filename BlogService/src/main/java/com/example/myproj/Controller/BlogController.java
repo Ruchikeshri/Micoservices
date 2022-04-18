@@ -10,10 +10,13 @@ import com.example.myproj.Exception.BlogNotFoundException;
 
 import com.example.myproj.Service.BlogSequenceGenerator;
 //import com.example.myproj.client.UserClient;
+import com.example.myproj.client.UserClient;
 import com.example.myproj.model.Blog;
 //import com.example.myproj.userservice.model.RegisterAndLogin;
+//import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+//import io.swagger.annotations.ApiOperation;
+//import io.swagger.annotations.Authorization;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +47,9 @@ public class BlogController {
     private RestTemplate template;
     @Autowired
     private WebClient.Builder webClient;
-
+    @Autowired
+    private UserClient client;
+    public static final String BLOG_SERVICE="blog-service";
     @Autowired
     public BlogController(BlogService blogService) {
 
@@ -61,8 +66,20 @@ public class BlogController {
             }
         };
     }
-
-    @ApiOperation(value = "Save the blogs")
+@GetMapping("/findAll")
+public String getAll()
+{
+    return client.getUsers();
+}
+@GetMapping("/user1")
+public ResponseEntity<?> getUser(@RequestParam String email)
+{
+//   client.getUser();
+    logger.info(client.getUser(email));
+//    return client.getUser();
+    return new ResponseEntity<>(client.getUser(email),HttpStatus.OK);
+}
+//    @ApiOperation(value = "Save the blogs")
     @PostMapping("blog")
     public ResponseEntity<Blog> SaveBlog(@RequestBody Blog blog) throws BlogAlreadyExistsException {
         logger.info("Adding Blog details");
@@ -85,7 +102,7 @@ public class BlogController {
         return template.getForObject(url, String.class);
     }
 //    @Value("${jwt.secret}")
-    @ApiOperation(value = "authorize",authorizations={@Authorization(value = "${jwt.secret}")})
+//    @ApiOperation(value = "authorize",authorizations={@Authorization(value = "${jwt.secret}")})
     @GetMapping("data")
     public String getSensitiveData() {
         HttpHeaders headers = new HttpHeaders();
@@ -113,7 +130,7 @@ public class BlogController {
     }
 
 
-    @ApiOperation(value = "get",authorizations={@Authorization(value = "${jwt.secret}")})
+//    @ApiOperation(value = "get",authorizations={@Authorization(value = "${jwt.secret}")})
     @GetMapping("blogs")
     public ResponseEntity<List<Blog>> getBlogs() {
         logger.info("Getting blog details");
@@ -134,6 +151,8 @@ public class BlogController {
 
     @GetMapping("blog")
     @ApiOperation(value = "get by ID")
+//    @CircuitBreaker(name = BLOG_SERVICE, fallbackMethod ="getBlogs")
+//  @CircuitBreaker(name = BLOG_SERVICE,fallbackMethod = "getBlogs")
     public ResponseEntity<Blog> getBlogById(@RequestParam int BlogId) throws BlogNotFoundException {
         logger.info(".........Get Blog by ID details");
         return new ResponseEntity<Blog>(blogService.getBlogById(BlogId), HttpStatus.OK);
@@ -145,14 +164,14 @@ public class BlogController {
 //	return new ResponseEntity<Blog>(blogService.getBlogById(blogId),HttpStatus.OK);
 //}
     @DeleteMapping("blog")
-    @ApiOperation(value = "get by ID")
+//    @ApiOperation(value = "get by ID")
     public ResponseEntity<Blog> DeleteId(@RequestParam int BlogId) throws BlogNotFoundException {
         logger.info("............Delete Blog by ID details");
         return new ResponseEntity<Blog>(blogService.deleteById(BlogId), HttpStatus.OK);
     }
 
     @GetMapping("blogsID")
-    @ApiOperation(value = "get by ID")
+//    @ApiOperation(value = "get by ID")
     public ResponseEntity<?> GetBlogs() {
         List<Blog> b2 = blogService.getAllBlogs();
         List<String> b4 = b2.stream().sorted(Comparator.comparingInt(Blog::getBlogId)).map(Blog::getAuthorName).collect(Collectors.toList());

@@ -54,9 +54,5 @@ public class SwaggerConfig {
                 .version("1.0")
                 .build();
     }
-//    ${jwt.secret}
-//    private ApiKey apiKey()
-//    {
-//        return new ApiKey("secret","authorization","header");
-//    }
+
 }
