@@ -11,4 +11,6 @@ public interface UserClient {
     public String getUsers();
     @GetMapping("api/v1/user?email=")
     public String getUser(@RequestParam String email);
+
+
 }

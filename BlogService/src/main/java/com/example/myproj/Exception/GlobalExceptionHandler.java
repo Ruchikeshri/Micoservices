@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @Value(value="{data.value.message1}")
+    @Value(value="${data.value.message1}")
 
     private String message1;
 //    @Value(value = "BlogNotFound")

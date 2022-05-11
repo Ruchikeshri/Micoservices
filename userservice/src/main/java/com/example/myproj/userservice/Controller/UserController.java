@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.data.domain.Page;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +34,9 @@ import java.util.stream.Collectors;
 public class UserController {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
+    @Autowired
+    private final StreamBridge streamBridge;
 
-    //    @Autowired
-//    private RabbbitMqSender rabbbitMqSender;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -45,8 +45,9 @@ public class UserController {
     ResponseEntity<?> responseEntity;
 
     @Autowired
-    public UserController(UserService userService, JWTTokenGenerator jwtTokenGenerator) {
+    public UserController(UserService userService, StreamBridge streamBridge, JWTTokenGenerator jwtTokenGenerator) {
         this.userService = userService;
+        this.streamBridge = streamBridge;
         this.jwtTokenGenerator = jwtTokenGenerator;
     }
 
@@ -82,6 +83,7 @@ public class UserController {
         return template.getForObject(url, String.class);
     }
 
+
     @DeleteMapping("/blogs-service")
     public String deleteBlogService(@RequestParam int BlogId) {
         logger.info("Deleting Blog Service from user service");
@@ -96,7 +98,7 @@ public class UserController {
 //        String encryptPwd = passwordEncoder.encode(pwd);
 //        user.setPassword(encryptPwd);
         RegisterAndLogin user1 = userService.saveUser(user);
-
+streamBridge.send("notificationEventSupplier-out-0",user.getEmail());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
